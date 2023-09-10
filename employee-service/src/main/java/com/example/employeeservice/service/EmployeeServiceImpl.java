@@ -2,6 +2,7 @@ package com.example.employeeservice.service;
 
 import com.example.employeeservice.dto.EmployeeDto;
 import com.example.employeeservice.entity.Employee;
+import com.example.employeeservice.exception.ResourceNotFoundException;
 import com.example.employeeservice.repository.EmployeeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -31,10 +32,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDto getEmployeeById(Long id) {
-        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
-        if (optionalEmployee.isEmpty()) {
-            throw new RuntimeException("Employee does not exist with id " + id);
-        }
-        return modelMapper.map(optionalEmployee.get(), EmployeeDto.class);
+        Employee employee = employeeRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Employee", "id", String.valueOf(id))
+        );
+        return modelMapper.map(employee, EmployeeDto.class);
     }
 }

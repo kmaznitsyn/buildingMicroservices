@@ -1,36 +1,28 @@
 package com.example.departmentservice.service;
 
-import com.example.departmentservice.converter.DepartmentConverter;
 import com.example.departmentservice.dto.DepartmentDto;
 import com.example.departmentservice.entity.Department;
 import com.example.departmentservice.repository.DepartmentRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
 
     private final DepartmentRepository departmentRepository;
-    private final DepartmentConverter departmentConverter;
+    private final ModelMapper modelMapper;
 
-    public DepartmentServiceImpl(DepartmentRepository departmentRepository, DepartmentConverter departmentConverter) {
+    public DepartmentServiceImpl(DepartmentRepository departmentRepository, ModelMapper modelMapper) {
         this.departmentRepository = departmentRepository;
-        this.departmentConverter = departmentConverter;
+        this.modelMapper = modelMapper;
     }
 
     @Override
     public DepartmentDto saveDepartment(DepartmentDto dto) {
-        Department department = new Department(
-                dto.getDepartmentName(),
-                dto.getDepartmentDescription(),
-                dto.getDepartmentCode()
-        );
+        Department department = modelMapper.map(dto, Department.class);
         Department savedDepartment = departmentRepository.save(department);
 
-        DepartmentDto savedDepartmentDto = new DepartmentDto(
-                savedDepartment.getDepartmentName(),
-                savedDepartment.getDepartmentDescription(),
-                savedDepartment.getDepartmentCode()
-        );
+        DepartmentDto savedDepartmentDto = modelMapper.map(savedDepartment, DepartmentDto.class);
         return savedDepartmentDto;
     }
 
@@ -40,6 +32,6 @@ public class DepartmentServiceImpl implements DepartmentService {
         if (department == null) {
             throw new RuntimeException("Department was not found by code " + departmentCode);
         }
-        return departmentConverter.convertToDto(department);
+        return modelMapper.map(department, DepartmentDto.class);
     }
 }

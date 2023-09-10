@@ -1,11 +1,16 @@
 package com.example.departmentservice.controller;
 
 import com.example.departmentservice.dto.DepartmentDto;
+import com.example.departmentservice.exception.ErrorDetails;
+import com.example.departmentservice.exception.ResourceNotFoundException;
 import com.example.departmentservice.service.DepartmentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
+
+import java.time.LocalDateTime;
 
 /**
  * Controller for handling Department operations
